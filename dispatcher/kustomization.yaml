@@ -1,0 +1,27 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+resources:
+- examples/dispatcher.yaml
+
+namespace: kueue-demo
+
+configMapGenerator:
+- literals:
+  - GOOGLE_PROJECT_ID=my-project-id
+  - DISPATCHER_PUBSUB_TOPIC=bucket-notifications
+  - DISPATCHER_QUEUE_NAME=kueue-demo-lq
+  - COMPRESSOR_NAMESPACE=kueue-demo
+  - COMPRESSOR_SA=kueue-demo-job@my-project-id.iam.gserviceaccount.com
+  name: dispatcher-config
+
+patches:
+- target:
+    version: v1
+    kind: ServiceAccount
+    name: dispatcher
+  patch: |-
+    - op: add
+      path: /metadata/annotations
+      value:
+        iam.gke.io/gcp-service-account: kueue-demo-job@my-project-id.iam.gserviceaccount.com
