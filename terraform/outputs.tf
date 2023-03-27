@@ -14,17 +14,12 @@
  * limitations under the License.
  */
 
-variable "project_id" {
-  default = "Project identifier"
-  type    = string
+output "kueue-demo-sa" {
+  description = "Email identifier of the service account for kueue-demo job workloads"
+  value       = google_service_account.kueue-demo-job.email
 }
 
-variable "cluster_auto_region" {
-  default = "Region for the cluster"
-  type    = string
-}
-
-variable "cluster_auto_subnet_range" {
-  default = "Primary IP range for cluster subnet"
-  type    = string
+output "kueue-demo-bucket-name" {
+  description = "Name of the bucket for kueue-demo files"
+  value       = google_storage_bucket.bucket.name
 }
