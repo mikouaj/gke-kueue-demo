@@ -33,7 +33,7 @@ import (
 )
 
 const (
-	subscriptionID = "kueue-job-creator"
+	subscriptionID = "kueue-dispatcher"
 	saName         = "compressor"
 )
 
