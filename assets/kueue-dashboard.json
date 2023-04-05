@@ -350,7 +350,7 @@
           "refId": "A"
         }
       ],
-      "title": "Cluster nodes",
+      "title": "Total nodes",
       "type": "stat"
     },
     {
@@ -770,6 +770,68 @@
         "type": "prometheus",
         "uid": "P1809F7CD0C75ACF3"
       },
+      "description": "The total number of nodes with Ready == true condition",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 4,
+        "w": 3,
+        "x": 0,
+        "y": 19
+      },
+      "id": 31,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "none",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "textMode": "auto"
+      },
+      "pluginVersion": "9.4.3",
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "P1809F7CD0C75ACF3"
+          },
+          "editorMode": "code",
+          "expr": "sum(kube_node_status_condition{condition=\"Ready\",status=\"true\"})",
+          "legendFormat": "__auto",
+          "range": true,
+          "refId": "A"
+        }
+      ],
+      "title": "Nodes ready",
+      "type": "stat"
+    },
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "P1809F7CD0C75ACF3"
+      },
       "description": "The total number of nodes with Ready == false condition",
       "fieldConfig": {
         "defaults": {
@@ -791,11 +853,11 @@
       },
       "gridPos": {
         "h": 4,
-        "w": 4,
-        "x": 0,
+        "w": 3,
+        "x": 3,
         "y": 19
       },
-      "id": 31,
+      "id": 36,
       "options": {
         "colorMode": "value",
         "graphMode": "none",
@@ -853,8 +915,8 @@
       },
       "gridPos": {
         "h": 4,
-        "w": 4,
-        "x": 4,
+        "w": 3,
+        "x": 6,
         "y": 19
       },
       "id": 27,
@@ -1187,8 +1249,8 @@
     "list": []
   },
   "time": {
-    "from": "2023-03-01T07:31:10.406Z",
-    "to": "2023-03-01T10:52:13.129Z"
+    "from": "now-5m",
+    "to": "now"
   },
   "timepicker": {
     "nowDelay": ""
@@ -1196,6 +1258,6 @@
   "timezone": "",
   "title": "Kueue overview",
   "uid": "DoNO0Jx4z",
-  "version": 10,
+  "version": 12,
   "weekStart": ""
 }
