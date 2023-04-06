@@ -30,6 +30,7 @@ const (
 	compressorImgVarName       = "COMPRESSOR_IMAGE"
 	compressorNamespaceVarName = "COMPRESSOR_NAMESPACE"
 	compressorSAVarName        = "COMPRESSOR_SA"
+	compressorPrioClassVarName = "COMPRESSOR_PRIORITY_CLASS"
 
 	defaultFolderName = "inbox"
 )
@@ -45,6 +46,7 @@ type Config struct {
 	CompressorImage     string
 	CompressorNamespace string
 	CompressorSA        string
+	CompressorPrioClass string
 }
 
 func (c *Config) Valid() error {
@@ -105,6 +107,9 @@ func NewConfigFromEnv() *Config {
 	}
 	if val := os.Getenv(compressorSAVarName); val != "" {
 		config.CompressorSA = val
+	}
+	if val := os.Getenv(compressorPrioClassVarName); val != "" {
+		config.CompressorPrioClass = val
 	}
 	return config
 }

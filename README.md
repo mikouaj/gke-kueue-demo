@@ -13,7 +13,6 @@ and wants to learn how it can be done with [Kueue](https://kueue.sh) and [Google
 * [Prerequisites](./docs/01-prerequisites.md)
 * [Cluster setup](./docs/02-cluster-setup.md)
 
-
 ## Lab scenario
 
 Some of the labs are based on the following scenario: the batch `compressor` jobs are created by the
@@ -28,3 +27,7 @@ The [terraform](./terraform/) directory contains the code for setting up the req
 The [dispatcher](./dispatcher/) directory contains the code of the `dispatcher` application.
 
 The [compressor](./dispatcher/) directory contains the code of the `compressor` application.
+
+## Extra assets
+
+The [assets](./assets/) directory contains extra assets like Grafana monitoring dashboards for Kueue.

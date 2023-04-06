@@ -33,8 +33,7 @@ import (
 )
 
 const (
-	subscriptionID = "kueue-dispatcher"
-	saName         = "compressor"
+	saName = "compressor"
 )
 
 type Creator struct {
@@ -47,10 +46,12 @@ type Creator struct {
 	compressorImage     string
 	compressorNamespace string
 	compressorSA        string
+	compressorPrioClass string
+	subscriptionID      string
 }
 
 func NewCreator(ctx context.Context, pubsubClient *pubsub.Client, k8sClient *kubernetes.Clientset,
-	topic, folder, queueName, compressorImage, compressorNamespace, compressorSA string) *Creator {
+	topic, folder, queueName, compressorImage, compressorNamespace, compressorSA, compressorPrioClass string) *Creator {
 	return &Creator{
 		ctx:                 ctx,
 		pubsubClient:        pubsubClient,
@@ -61,6 +62,8 @@ func NewCreator(ctx context.Context, pubsubClient *pubsub.Client, k8sClient *kub
 		compressorImage:     compressorImage,
 		compressorNamespace: compressorNamespace,
 		compressorSA:        compressorSA,
+		compressorPrioClass: compressorPrioClass,
+		subscriptionID:      "kueue-dispatcher-" + folder,
 	}
 }
 
@@ -109,13 +112,13 @@ func (c *Creator) getSubscription() (*pubsub.Subscription, error) {
 		if err != nil {
 			return nil, err
 		}
-		if sub.ID() == subscriptionID {
-			log.Infof("found subscription with id=%s", subscriptionID)
+		if sub.ID() == c.subscriptionID {
+			log.Infof("found subscription with id=%s", c.subscriptionID)
 			return sub, nil
 		}
 	}
-	log.Infof("subscription with id=%s not found, creating new one", subscriptionID)
-	return c.pubsubClient.CreateSubscription(c.ctx, subscriptionID, pubsub.SubscriptionConfig{
+	log.Infof("subscription with id=%s not found, creating new one", c.subscriptionID)
+	return c.pubsubClient.CreateSubscription(c.ctx, c.subscriptionID, pubsub.SubscriptionConfig{
 		Topic: c.pubsubClient.Topic(c.topic),
 	})
 }
@@ -174,6 +177,9 @@ func (c *Creator) createJobForObject(obj *storage.Object) error {
 				},
 			},
 		},
+	}
+	if c.compressorPrioClass != "" {
+		job.Spec.Template.Spec.PriorityClassName = c.compressorPrioClass
 	}
 	log.Infof("Creating Kubernetes job to compress object %s in bucket %s in namespace %s, image %s", obj.Name, obj.Bucket, c.compressorNamespace, c.compressorImage)
 	_, err := c.k8sClient.BatchV1().Jobs(c.compressorNamespace).Create(c.ctx, job, metav1.CreateOptions{})
