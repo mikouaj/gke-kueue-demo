@@ -92,7 +92,7 @@ func (c *Creator) Start() error {
 			log.Errorf("failed to decode pub/sub message with id=%s :%s", m.ID, err)
 			m.Nack()
 		}
-		if strings.HasPrefix(obj.Name, c.folder) && !strings.HasSuffix(obj.Name, "/") {
+		if strings.HasPrefix(obj.Name, c.folder+"/") && !strings.HasSuffix(obj.Name, "/") {
 			c.createJobForObject(&obj)
 		} else {
 			log.Debugf("skipping object with name %s (is a folder or has missing %s prefix)", obj.Name, c.folder)
