@@ -55,7 +55,8 @@ func main() {
 	}
 
 	creator := dispatch.NewCreator(ctx, pubsubClient, k8sClient, config.Topic, config.Folder,
-		config.QueueName, config.CompressorImage, config.CompressorNamespace, config.CompressorSA, config.CompressorPrioClass)
+		config.QueueName, config.CompressorImage, config.CompressorNamespace, config.CompressorSA,
+		config.CompressorPrioClass, config.CompressorFolder)
 	defer creator.Close()
 	done := make(chan bool, 1)
 	go func() {

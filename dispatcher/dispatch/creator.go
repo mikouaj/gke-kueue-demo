@@ -47,11 +47,13 @@ type Creator struct {
 	compressorNamespace string
 	compressorSA        string
 	compressorPrioClass string
+	compressorFolder    string
 	subscriptionID      string
 }
 
 func NewCreator(ctx context.Context, pubsubClient *pubsub.Client, k8sClient *kubernetes.Clientset,
-	topic, folder, queueName, compressorImage, compressorNamespace, compressorSA, compressorPrioClass string) *Creator {
+	topic, folder, queueName, compressorImage, compressorNamespace, compressorSA,
+	compressorPrioClass, compressorFolder string) *Creator {
 	return &Creator{
 		ctx:                 ctx,
 		pubsubClient:        pubsubClient,
@@ -63,6 +65,7 @@ func NewCreator(ctx context.Context, pubsubClient *pubsub.Client, k8sClient *kub
 		compressorNamespace: compressorNamespace,
 		compressorSA:        compressorSA,
 		compressorPrioClass: compressorPrioClass,
+		compressorFolder:    compressorFolder,
 		subscriptionID:      "kueue-dispatcher-" + folder,
 	}
 }
@@ -180,6 +183,12 @@ func (c *Creator) createJobForObject(obj *storage.Object) error {
 	}
 	if c.compressorPrioClass != "" {
 		job.Spec.Template.Spec.PriorityClassName = c.compressorPrioClass
+	}
+	if c.compressorFolder != "" {
+		job.Spec.Template.Spec.Containers[0].Env = append(job.Spec.Template.Spec.Containers[0].Env, v1.EnvVar{
+			Name:  "COMPRESSOR_FOLDER",
+			Value: c.compressorFolder,
+		})
 	}
 	log.Infof("Creating Kubernetes job to compress object %s in bucket %s in namespace %s, image %s", obj.Name, obj.Bucket, c.compressorNamespace, c.compressorImage)
 	_, err := c.k8sClient.BatchV1().Jobs(c.compressorNamespace).Create(c.ctx, job, metav1.CreateOptions{})

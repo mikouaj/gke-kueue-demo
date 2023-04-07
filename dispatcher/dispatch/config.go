@@ -25,12 +25,13 @@ const (
 	logLevelVarName            = "DISPATCHER_LOG_LEVEL"
 	logJSONVarName             = "DISPATCHER_LOG_JSON"
 	kubeConfigVarName          = "DISPATCHER_KUBE_CONFIG"
-	queueNameVarName           = "DISPATCHER_QUEUE_NAME"
 	folderVarName              = "DISPATCHER_FOLDER"
+	queueNameVarName           = "COMPRESSOR_QUEUE_NAME"
 	compressorImgVarName       = "COMPRESSOR_IMAGE"
 	compressorNamespaceVarName = "COMPRESSOR_NAMESPACE"
 	compressorSAVarName        = "COMPRESSOR_SA"
 	compressorPrioClassVarName = "COMPRESSOR_PRIORITY_CLASS"
+	compressorFolderVarName    = "COMPRESSOR_FOLDER"
 
 	defaultFolderName = "inbox"
 )
@@ -47,6 +48,7 @@ type Config struct {
 	CompressorNamespace string
 	CompressorSA        string
 	CompressorPrioClass string
+	CompressorFolder    string
 }
 
 func (c *Config) Valid() error {
@@ -110,6 +112,9 @@ func NewConfigFromEnv() *Config {
 	}
 	if val := os.Getenv(compressorPrioClassVarName); val != "" {
 		config.CompressorPrioClass = val
+	}
+	if val := os.Getenv(compressorFolderVarName); val != "" {
+		config.CompressorFolder = val
 	}
 	return config
 }
